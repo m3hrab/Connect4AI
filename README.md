@@ -6,7 +6,7 @@ This is a Connect4 game implementation where you can play against a computer tha
 
 1. Clone the repository to your local machine.
 2. Open a terminal window and navigate to the cloned repository.
-3. Run `python3 connect4.py` to start the game.
+3. Run `python3 main.py` to start the game.
 4. Follow the prompts in the terminal to choose whether you want to play as Player 1 or Player 2, and to choose the depth of the minimax algorithm (i.e., the number of moves ahead the computer should consider).
 5. Play the game by typing the column number (1-7) where you want to drop your piece.
 6. The game ends when one player connects four pieces in a row, or the board is filled with no winner.
