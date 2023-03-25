@@ -97,8 +97,8 @@ screen.fill(WHITE)
 draw_board(board)
 pygame.display.update()
 
-myfont = pygame.font.SysFont("monospace", 60)
-font = pygame.font.SysFont("monospace", 30)
+myfont = pygame.font.SysFont('comicsansms', 60)
+font = pygame.font.SysFont("comicsansms", 30)
 
 # Set the button size and position
 button_width = 180
@@ -169,7 +169,7 @@ while not game_over:
 							game_over = True
 
 
-			elif button_x <= mouse_pos[0] <= button_x + button_width and \
+			if button_x <= mouse_pos[0] <= button_x + button_width and \
                     button_y <= mouse_pos[1] <= button_y + button_height:
 				# Pause/resume the timer
 				timer_paused = not timer_paused
