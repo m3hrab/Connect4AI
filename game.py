@@ -1,7 +1,6 @@
 import pygame
 from borad import Board
 from player import Player
-import time
 
 class Game:
 
@@ -164,3 +163,5 @@ class Game:
         pygame.display.update()
         pygame.time.delay(5000)
         pygame.quit()
+
+# Game("Mehrab", "Joti").run()

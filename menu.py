@@ -1,5 +1,5 @@
 import pygame
-import game
+from game import Game
 
 # Initialize Pygame
 pygame.init()
@@ -9,7 +9,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 # Define the window size
-WINDOW_SIZE = (800, 600)
+WINDOW_SIZE = (930, 630)
 
 # Define the font for the menu buttons
 BUTTON_FONT = pygame.font.Font(None, 40)
@@ -22,8 +22,8 @@ class Button:
         self.function = function
 
     def draw(self, surface):
-        pygame.draw.rect(surface, WHITE, self.rect)
-        text_surface = BUTTON_FONT.render(self.text, True, BLACK)
+        pygame.draw.rect(surface, BLACK, self.rect)
+        text_surface = BUTTON_FONT.render(self.text, True, WHITE)
         text_rect = text_surface.get_rect()
         text_rect.center = self.rect.center
         surface.blit(text_surface, text_rect)
@@ -44,7 +44,7 @@ class Menu:
         self.buttons.append(button)
 
     def draw(self):
-        self.screen.fill(BLACK)
+        self.screen.fill(WHITE)
         for button in self.buttons:
             button.draw(self.screen)
 
@@ -63,7 +63,7 @@ class Menu:
 
 # Define the functions to be called when the menu buttons are clicked
 def play():
-    print("Play")
+    Game("Mehrab", "Joti").run()
 
 def leaderboard():
     print("Leaderboard")
