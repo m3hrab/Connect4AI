@@ -1,6 +1,8 @@
 import pygame
 from game import Game
 from login import Login
+from easy_ai_player import EasyGameAI
+from medium_ai_player import Game
 # Initialize Pygame
 pygame.init()
 
@@ -75,8 +77,11 @@ class Menu:
             pygame.display.flip()
 
 # Define the functions to be called when the menu buttons are clicked
-def play():
+def multiplayer():
     Game("Mehrab", "Joti").run()
+
+def easy_ai():
+    EasyGameAI("Mehrab").run()
 
 def leaderboard():
     print("Leaderboard")
@@ -100,10 +105,10 @@ rect = screen.get_rect()
 # Draw the table rects
 menu = Menu(screen)
 menu.add_button(rect.centerx-100, rect.centery-80, 200, 40, "Leaderboard", leaderboard)
-menu.add_button(rect.centerx-140, rect.centery+60, 130, 40, "Easy", play)
-menu.add_button(rect.centerx+10, rect.centery+60, 130, 40, "Meduim", play)
-menu.add_button(rect.centerx-140, rect.centery+110, 130, 40, "Hard", play)
-menu.add_button(rect.centerx+10, rect.centery+110, 130, 40, "2 Player", play)
+menu.add_button(rect.centerx-140, rect.centery+60, 130, 40, "Easy", easy_ai)
+menu.add_button(rect.centerx+10, rect.centery+60, 130, 40, "Meduim", multiplayer)
+menu.add_button(rect.centerx-140, rect.centery+110, 130, 40, "Hard", multiplayer)
+menu.add_button(rect.centerx+10, rect.centery+110, 130, 40, "2 Player", multiplayer)
 menu.add_button(rect.left+30, rect.centery-80, 200, 40, "Player 1 Login", player1_login)
 menu.add_button(rect.right-230, rect.centery-80, 200, 40, "Player 2 Login", player2_login)
 menu.add_button(rect.top+10, rect.left+10, 80, 40, "Help", player2_login)
