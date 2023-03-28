@@ -99,40 +99,65 @@ class MediumGameAI:
         screen.blit(text_surface1, text_rect1)
         screen.blit(text_surface2, text_rect2)
 
+    def evaluate_window(self, window):
+        score = 0
+
+        # checking AI players score 
+        if window.count(2) == 4:
+            score += 100
+        elif window.count(2) == 3 and window.count(self.empty) == 1:
+            score += 10
+        elif window.count(2) == 2 and window.count(self.empty) == 2:
+            score += 5 
+
+        # checking for the oppent score    
+        if window.count(1) == 3 and window.count(self.empty) == 1:
+            score -= 80 
+
+        return score 
 
 
     def score_position(self, board):
-        # Score for horizontal
         score = 0
+        
+        # score for center column
+        center_array = [int(i) for i in list(board[:,3])]
+        center_count = center_array.count(self.piece)
+        score += center_count * 6
+        
+        # Score for horizontal
         for r in range(6): #row = 6
             row_array = [int(i) for i in list(board[r,:])]
             for c in range(4): #col = 7-3 for 4 consicute piece
                 window = row_array[c:c+4] #window length
-                if window.count(self.piece) == 4:
-                    score += 100 
-                elif window.count(self.piece)==3 and window.count(self.empty) == 1:
-                    score += 10
+                score += self.evaluate_window(window)
 
         # vertical score 
         for c in range(7): # Column = 7
             col_array = [int(i) for i in list(board[:,c])]
             for r in range(6-3): #Row = 6
                 window = col_array[r:r+4]
-                if window.count(self.piece) == 4:
-                    score += 100 
-                elif window.count(self.piece)==3 and window.count(self.empty) == 1:
-                    score += 10 
+                score += self.evaluate_window(window)
 
-        # Positive Horizontal Scroe 
-        # for r in range(3): # row-3
-        #     for c in range(4): # col-3
-        #         window = [board[r+i][c+i] for i in range(4)]
+
+        # Positive Sloped diagonal Scroe 
+        for r in range(3): # row-3
+            for c in range(4): # col-3
+                window = [board[r+i][c+i] for i in range(4)]
+                score += self.evaluate_window(window)
+
+
+        # Negative sloped diagonal score 
+        for r in range(3): # row-3
+            for c in range(4): # col-3
+                window = [board[r+3-i][c+i] for i in range(4)]
+                score += self.evaluate_window(window)
 
         return score    
 
     def pick_best_move(self):
         valid_moves = self.board.get_valid_moves()
-        best_score = 0 
+        best_score = -10000 
         best_col = random.choice(valid_moves)
         for col in valid_moves:
             row = self.board.get_next_open_row(col)
@@ -154,9 +179,6 @@ class MediumGameAI:
 
         # Start the main loop for the game 
         while not self.game_over:
-            
-            # screen.fill((255, 255, 255))
-            # self.board.draw(screen)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -168,8 +190,6 @@ class MediumGameAI:
                     if not self.timer_paused:
                         self.time_left -= 1
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # if event.key == pygame.K_SPACE:
-                    #     self.timer_paused = not self.timer_paused
                     if self.button_x <= mouse_pos[0] <= self.button_x + self.button_width and \
                             self.button_y <= mouse_pos[1] <= self.button_y + self.button_height:
                         # Pause/resume the timer
