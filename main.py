@@ -2,7 +2,7 @@ import pygame
 from game import Game
 from login import Login
 from easy_ai_player import EasyGameAI
-from medium_ai_player import Game
+from medium_ai_player import MediumGameAI
 # Initialize Pygame
 pygame.init()
 
@@ -82,6 +82,8 @@ def multiplayer():
 
 def easy_ai():
     EasyGameAI("Mehrab").run()
+def medium_ai():
+    MediumGameAI("Mehrab").run()
 
 def leaderboard():
     print("Leaderboard")
@@ -106,7 +108,7 @@ rect = screen.get_rect()
 menu = Menu(screen)
 menu.add_button(rect.centerx-100, rect.centery-80, 200, 40, "Leaderboard", leaderboard)
 menu.add_button(rect.centerx-140, rect.centery+60, 130, 40, "Easy", easy_ai)
-menu.add_button(rect.centerx+10, rect.centery+60, 130, 40, "Meduim", multiplayer)
+menu.add_button(rect.centerx+10, rect.centery+60, 130, 40, "Meduim", medium_ai)
 menu.add_button(rect.centerx-140, rect.centery+110, 130, 40, "Hard", multiplayer)
 menu.add_button(rect.centerx+10, rect.centery+110, 130, 40, "2 Player", multiplayer)
 menu.add_button(rect.left+30, rect.centery-80, 200, 40, "Player 1 Login", player1_login)

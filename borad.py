@@ -29,7 +29,7 @@ class Board:
     
     def drop_piece(self, row, column, piece):
         self.grid[row][column] = piece
-        print(np.flip(self.grid,0))
+        # print(np.flip(self.grid,0))
             
     def get_next_open_row(self, col):
         # find the next open window to drop piece 
