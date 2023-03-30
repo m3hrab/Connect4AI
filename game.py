@@ -163,3 +163,6 @@ class Game:
         pygame.display.update()
         pygame.time.delay(5000)
         pygame.quit()
+
+
+Game("Player 1", "Player 2").run()
