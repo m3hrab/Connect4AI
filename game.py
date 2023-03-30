@@ -8,7 +8,7 @@ class Game:
     
         pygame.init()
         self.board = Board(6, 7)
-        self.players = [Player(player1, (255, 0, 0)), Player(player2, (255, 255, 0))]
+        self.players = [Player(player1), Player(player2)]
         self.current_player = self.players[0]
         self.piece = 1
         self.game_over = False

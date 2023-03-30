@@ -10,7 +10,7 @@ class MediumGameAI:
     
         pygame.init()
         self.board = Board(6, 7)
-        self.players = [Player(player1, (255, 0, 0)), Player(player2, (255, 255, 0))]
+        self.players = [Player(player1), Player(player2)]
         temp = random.randint(0,1)
         self.current_player = self.players[temp]
         self.piece = temp+1
@@ -160,7 +160,7 @@ class MediumGameAI:
         best_score = -10000 
         best_col = random.choice(valid_moves)
         for col in valid_moves:
-            row = self.board.get_next_open_row(col)
+            row = self.board.get_next_empty_row(col)
             temp_board = self.board.grid.copy()
             temp_board[row][col] = self.piece
             score = self.score_position(temp_board)
