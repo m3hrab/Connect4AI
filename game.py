@@ -22,6 +22,10 @@ class Game:
         self.time_left = 120
         self.width = 7 * 90 + 300 
         self.height = (6+1) * 90
+
+        # Define button properties
+        self.back_button = pygame.Rect(self.width-190, self.height-45 , 90, 35)
+        self.back_button_color = (240, 10, 15)
         
     def switch_player(self):
         if self.current_player == self.players[0]:
@@ -58,13 +62,14 @@ class Game:
         pygame.draw.rect(screen, button_color, (self.button_x, self.button_y, self.button_width, self.button_height))
         screen.blit(button_text_surface, button_text_rect)
 
+    
     def draw_players(self,screen):
         # Draw the players name
         width = 160
         height = 50
         x = screen.get_rect().right - (self.button_width+40) 
         y1 = screen.get_rect().centery - 180
-        y2 = screen.get_rect().centery + 180
+        y2 = screen.get_rect().centery + 170
         text1 = self.players[0].name
         text2 = self.players[1].name 
         color_active = (255, 255, 255)
@@ -91,9 +96,9 @@ class Game:
             pygame.draw.circle(screen, (44, 62, 80), (x-20, y2+25), 10)
             pygame.draw.circle(screen, (255, 255, 255), (x-20, y1+25), 10)
 
-
         screen.blit(text_surface1, text_rect1)
         screen.blit(text_surface2, text_rect2)
+
 
 
         
@@ -121,6 +126,9 @@ class Game:
                         self.time_left -= 1
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # if event.key == pygame.K_SPACE:
+                    if self.back_button.collidepoint(event.pos):
+                        return 
+
                     #     self.timer_paused = not self.timer_paused
                     if self.button_x <= mouse_pos[0] <= self.button_x + self.button_width and \
                             self.button_y <= mouse_pos[1] <= self.button_y + self.button_height:
@@ -155,6 +163,11 @@ class Game:
             self.draw_timer_button(screen)
             self.draw_players(screen)
             self.board.draw(screen)
+            pygame.draw.rect(screen, self.back_button_color, self.back_button)
+            font = pygame.font.Font(None, 24)
+            text = font.render("Back", True, (255, 255, 255))
+            text_rect = text.get_rect(center=self.back_button.center)
+            screen.blit(text, text_rect)
             pygame.display.update()
             # self.clock.tick(60)
 
@@ -163,6 +176,3 @@ class Game:
         pygame.display.update()
         pygame.time.delay(5000)
         pygame.quit()
-
-
-Game("Player 1", "Player 2").run()

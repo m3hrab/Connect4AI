@@ -3,6 +3,7 @@ from borad import Board
 from player import Player
 import random
 import numpy as np
+import math
 
 class HardGameAI:
 
@@ -10,7 +11,7 @@ class HardGameAI:
     
         pygame.init()
         self.board = Board(6, 7)
-        self.players = [Player(player1, (255, 0, 0)), Player(player2, (255, 255, 0))]
+        self.players = [Player(player1), Player(player2)]
         temp = random.randint(0,1)
         self.current_player = self.players[temp]
         self.piece = temp+1
@@ -99,7 +100,7 @@ class HardGameAI:
         screen.blit(text_surface1, text_rect1)
         screen.blit(text_surface2, text_rect2)
 
-    def evaluate_window(self, window):
+    # def evaluate_window(self, window):
         score = 0
 
         # checking AI players score 
@@ -117,7 +118,7 @@ class HardGameAI:
         return score 
 
 
-    def score_position(self, board):
+    # def score_position(self, board):
         score = 0
         
         # score for center column
@@ -154,6 +155,86 @@ class HardGameAI:
                 score += self.evaluate_window(window)
 
         return score    
+    
+    # def is_terminal_node(self):
+    #     return self.board.get_winner() or len(self.board.get_valid_moves()) == 0
+    
+
+    def evaluate_board(self):
+        """
+        Evaluates the current state of the game board and returns a score.
+        """
+        score = 0
+
+        # Check horizontal scores
+        for r in range(self.board.height):
+            row_array = [int(i) for i in list(self.board.board[r,:])]
+            for c in range(self.board.width - 3):
+                window = row_array[c:c+4]
+                score += self.evaluate_window(window)
+
+        # Check vertical scores
+        for c in range(self.board.width):
+            col_array = [int(i) for i in list(self.board.board[:,c])]
+            for r in range(self.board.height - 3):
+                window = col_array[r:r+4]
+                score += self.evaluate_window(window)
+
+        # Check positively sloped diagonal scores
+        for r in range(self.board.height - 3):
+            for c in range(self.board.width - 3):
+                window = [self.board.board[r+i][c+i] for i in range(4)]
+                score += self.evaluate_window(window)
+
+        # Check negatively sloped diagonal scores
+        for r in range(self.board.height - 3):
+            for c in range(self.board.width - 3):
+                window = [self.board.board[r+3-i][c+i] for i in range(4)]
+                score += self.evaluate_window(window)
+
+        return score
+
+    def minimax(self, depth, alpha, beta, maximizingPlayer):
+        """
+        Implementation of the Minimax algorithm with alpha-beta pruning.
+        Returns the score of the best move for the current player at the current game state.
+        """
+        if self.game_over:
+            if self.winner == self.players[0].name:
+                return -1000000
+            elif self.winner == self.players[1].name:
+                return 1000000
+            else:
+                return 0
+
+        if depth == 0:
+            return self.evaluate_board()
+
+        if maximizingPlayer:
+            max_score = -np.inf
+            for col in range(self.board.width):
+                if self.board.is_valid_location(col):
+                    self.board.drop_piece(col, self.piece)
+                    score = self.minimax(depth - 1, alpha, beta, False)
+                    self.board.remove_piece(col)
+                    max_score = max(max_score, score)
+                    alpha = max(alpha, score)
+                    if beta <= alpha:
+                        break
+            return max_score
+        else:
+            min_score = np.inf
+            for col in range(self.board.width):
+                if self.board.is_valid_location(col):
+                    self.board.drop_piece(col, 3 - self.piece)
+                    score = self.minimax(depth - 1, alpha, beta, True)
+                    self.board.remove_piece(col)
+                    min_score = min(min_score, score)
+                    beta = min(beta, score)
+                    if beta <= alpha:
+                        break
+            return min_score
+
 
     def pick_best_move(self):
         valid_moves = self.board.get_valid_moves()

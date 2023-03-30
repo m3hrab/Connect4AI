@@ -4,6 +4,7 @@ from login import Login
 from easy_ai_player import EasyGameAI
 from medium_ai_player import MediumGameAI
 from hard_ai_player import HardGameAI
+from help import Help
 
 # Initialize Pygame
 pygame.init()
@@ -78,6 +79,10 @@ class Menu:
             self.draw()
             pygame.display.flip()
 
+# Create the menu screen and add the buttons
+screen = pygame.display.set_mode(WINDOW_SIZE)
+rect = screen.get_rect()
+
 # Define the functions to be called when the menu buttons are clicked
 def multiplayer():
     Game("Mehrab", "Joti").run()
@@ -101,11 +106,9 @@ def player2_login():
     print("Player 2 Login")
 
 def help():
-    print("help")
+    Help(screen).run()
 
-# Create the menu screen and add the buttons
-screen = pygame.display.set_mode(WINDOW_SIZE)
-rect = screen.get_rect()
+
 
 # Draw the table rects
 menu = Menu(screen)
@@ -116,7 +119,7 @@ menu.add_button(rect.centerx-140, rect.centery+110, 130, 40, "Hard", hard_ai)
 menu.add_button(rect.centerx+10, rect.centery+110, 130, 40, "2 Player", multiplayer)
 menu.add_button(rect.left+30, rect.centery-80, 200, 40, "Player 1 Login", player1_login)
 menu.add_button(rect.right-230, rect.centery-80, 200, 40, "Player 2 Login", player2_login)
-menu.add_button(rect.top+10, rect.left+10, 80, 40, "Help", player2_login)
+menu.add_button(rect.top+10, rect.left+10, 80, 40, "Help", help)
 
 
 
