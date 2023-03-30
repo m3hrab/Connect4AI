@@ -1,16 +1,20 @@
 import pygame
 from borad import Board
 from player import Player
+import random
+import numpy as np
 
-class Game:
+class HardGameAI:
 
-    def __init__(self, player1, player2):
+    def __init__(self, player1, player2="AI"):
     
         pygame.init()
         self.board = Board(6, 7)
         self.players = [Player(player1, (255, 0, 0)), Player(player2, (255, 255, 0))]
-        self.current_player = self.players[0]
-        self.piece = 1
+        temp = random.randint(0,1)
+        self.current_player = self.players[temp]
+        self.piece = temp+1
+        self.empty = 0
         self.game_over = False
         self.winner = None
         self.clock = pygame.time.Clock()
@@ -59,7 +63,7 @@ class Game:
         screen.blit(button_text_surface, button_text_rect)
 
     def draw_players(self,screen):
-        # Draw the players name
+        # Draw the button
         width = 160
         height = 50
         x = screen.get_rect().right - (self.button_width+40) 
@@ -95,8 +99,77 @@ class Game:
         screen.blit(text_surface1, text_rect1)
         screen.blit(text_surface2, text_rect2)
 
+    def evaluate_window(self, window):
+        score = 0
 
+        # checking AI players score 
+        if window.count(2) == 4:
+            score += 100
+        elif window.count(2) == 3 and window.count(self.empty) == 1:
+            score += 10
+        elif window.count(2) == 2 and window.count(self.empty) == 2:
+            score += 5 
+
+        # checking for the oppent score    
+        if window.count(1) == 3 and window.count(self.empty) == 1:
+            score -= 80 
+
+        return score 
+
+
+    def score_position(self, board):
+        score = 0
         
+        # score for center column
+        center_array = [int(i) for i in list(board[:,3])]
+        center_count = center_array.count(self.piece)
+        score += center_count * 6
+        
+        # Score for horizontal
+        for r in range(6): #row = 6
+            row_array = [int(i) for i in list(board[r,:])]
+            for c in range(4): #col = 7-3 for 4 consicute piece
+                window = row_array[c:c+4] #window length
+                score += self.evaluate_window(window)
+
+        # vertical score 
+        for c in range(7): # Column = 7
+            col_array = [int(i) for i in list(board[:,c])]
+            for r in range(6-3): #Row = 6
+                window = col_array[r:r+4]
+                score += self.evaluate_window(window)
+
+
+        # Positive Sloped diagonal Scroe 
+        for r in range(3): # row-3
+            for c in range(4): # col-3
+                window = [board[r+i][c+i] for i in range(4)]
+                score += self.evaluate_window(window)
+
+
+        # Negative sloped diagonal score 
+        for r in range(3): # row-3
+            for c in range(4): # col-3
+                window = [board[r+3-i][c+i] for i in range(4)]
+                score += self.evaluate_window(window)
+
+        return score    
+
+    def pick_best_move(self):
+        valid_moves = self.board.get_valid_moves()
+        best_score = -10000 
+        best_col = random.choice(valid_moves)
+        for col in valid_moves:
+            row = self.board.get_next_open_row(col)
+            temp_board = self.board.grid.copy()
+            temp_board[row][col] = self.piece
+            score = self.score_position(temp_board)
+            if score > best_score:
+                best_score = score
+                best_col = col
+        
+        return best_col
+
     def run(self):
         pygame.init()
         screen = pygame.display.set_mode((self.width, self.height))
@@ -106,9 +179,6 @@ class Game:
 
         # Start the main loop for the game 
         while not self.game_over:
-            
-            # screen.fill((255, 255, 255))
-            # self.board.draw(screen)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -120,8 +190,6 @@ class Game:
                     if not self.timer_paused:
                         self.time_left -= 1
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # if event.key == pygame.K_SPACE:
-                    #     self.timer_paused = not self.timer_paused
                     if self.button_x <= mouse_pos[0] <= self.button_x + self.button_width and \
                             self.button_y <= mouse_pos[1] <= self.button_y + self.button_height:
                         # Pause/resume the timer
@@ -138,7 +206,7 @@ class Game:
                             pygame.draw.circle(screen, (44, 62, 80), (posx+30, int(90/2)), 30)
                 pygame.display.update()
 
-                if event.type == pygame.MOUSEBUTTONDOWN and not self.timer_paused: 
+                if event.type == pygame.MOUSEBUTTONDOWN and not self.timer_paused and self.current_player == self.players[0]: 
                     mouse_pos = pygame.mouse.get_pos()
                     if (mouse_pos[0] >= 20 and mouse_pos[0] <= (int(6*90+90/2) + 40)):
                         column = mouse_pos[0]//90
@@ -147,7 +215,7 @@ class Game:
                             if self.check_winner(screen):
                                 break
                             self.switch_player()
-
+            
             timer_text = self.font.render(f"Time Left: {self.time_left} seconds", True, (0, 0, 0))
             # Remove Previous drawn screen
             pygame.draw.rect(screen, (255,255,255), (680,280, 300, 100))
@@ -157,6 +225,17 @@ class Game:
             self.board.draw(screen)
             pygame.display.update()
             # self.clock.tick(60)
+
+            # AI Turns
+            if (self.current_player==self.players[1]):
+                column = self.pick_best_move()
+                pygame.time.wait(random.randint(500,1000))
+                pygame.draw.rect(screen, (255,255,255), (0,0, 930, 90))
+                if self.current_player.make_move(self.board, column, self.piece):
+                    if self.check_winner(screen):
+                        break
+                    self.switch_player()
+
 
         winner_text = self.font2.render(f"Winner: {self.winner}", True, (0, 0, 0))
         screen.blit(winner_text, (40, 10))

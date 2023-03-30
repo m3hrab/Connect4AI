@@ -82,7 +82,4 @@ class Board:
             if self.is_valid_move(i):
                 valid_moves.append(i)
         return valid_moves
-
-    def __str__(self):
-        return str(self.grid)
     
