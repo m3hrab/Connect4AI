@@ -27,6 +27,10 @@ class MediumGameAI:
         self.width = 7 * 90 + 300 
         self.height = (6+1) * 90
         
+        # Define button properties
+        self.back_button = pygame.Rect(self.width-190, self.height-45 , 90, 35)
+        self.back_button_color = (240, 10, 15)
+        
     def switch_player(self):
         if self.current_player == self.players[0]:
             self.current_player = self.players[1]
@@ -194,6 +198,8 @@ class MediumGameAI:
                             self.button_y <= mouse_pos[1] <= self.button_y + self.button_height:
                         # Pause/resume the timer
                         self.timer_paused = not self.timer_paused
+                    if self.back_button.collidepoint(event.pos):
+                        return 
 
                 if event.type == pygame.MOUSEMOTION:
                     mouse_pos = pygame.mouse.get_pos()
@@ -223,6 +229,11 @@ class MediumGameAI:
             self.draw_timer_button(screen)
             self.draw_players(screen)
             self.board.draw(screen)
+            pygame.draw.rect(screen, self.back_button_color, self.back_button)
+            font = pygame.font.Font(None, 24)
+            text = font.render("Back", True, (255, 255, 255))
+            text_rect = text.get_rect(center=self.back_button.center)
+            screen.blit(text, text_rect)
             pygame.display.update()
             # self.clock.tick(60)
 
@@ -240,7 +251,3 @@ class MediumGameAI:
         winner_text = self.font2.render(f"Winner: {self.winner}", True, (0, 0, 0))
         screen.blit(winner_text, (40, 10))
         pygame.display.update()
-        pygame.time.delay(5000)
-        pygame.quit()
-
-# Game("Mehrab", "Joti").run()

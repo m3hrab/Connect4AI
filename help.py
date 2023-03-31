@@ -6,6 +6,7 @@ WHITE = (255, 255, 255)
 GRAY = (192, 192, 192)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+BLUE = (4, 102, 200)
 
 # Set the dimensions of the screen
 SCREEN_WIDTH = 930
@@ -17,7 +18,7 @@ class Button:
         self.color = color
         self.text = text
         self.font = pygame.font.Font(None, 28)
-        self.rendered_text = self.font.render(text, True, BLACK)
+        self.rendered_text = self.font.render(text, True, WHITE)
 
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)
@@ -44,7 +45,7 @@ class Help:
             "The first player to connect four pieces in a row wins the game.",
         ]
         self.rules_font = pygame.font.Font(None, 26)
-        self.back_button = Button(SCREEN_WIDTH-120, SCREEN_HEIGHT - 50, 100, 40, GREEN, "Back")
+        self.back_button = Button(SCREEN_WIDTH-120, SCREEN_HEIGHT - 50, 100, 40, BLUE, "Back")
 
     def run(self):
         running = True

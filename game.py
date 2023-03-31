@@ -174,5 +174,3 @@ class Game:
         winner_text = self.font2.render(f"Winner: {self.winner}", True, (0, 0, 0))
         screen.blit(winner_text, (40, 10))
         pygame.display.update()
-        pygame.time.delay(5000)
-        pygame.quit()
